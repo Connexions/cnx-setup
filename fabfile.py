@@ -7,7 +7,7 @@ import fabric.contrib.files
 from ilogue import fexpect
 env.use_ssh_config = True
 env.hosts = 'default'
-env.ssh_config_path ='./.ssh_config'
+env.ssh_config_path ='../../.ssh_config'
 env.use_sudo=True
 def _setup():
     """Install packages necessary for the connexion projects
@@ -54,7 +54,7 @@ def plpydbapi_setup(https=''):
         if https:
             run('git clone -b bug-fixes https://github.com/Connexions/plpydbapi.git')
         else:
-            run('git clone -b bug-fixes git@github.com:Connexions/plpydbapi.git')
+            sudo('git clone -b bug-fixes git@github.com:Connexions/plpydbapi.git')
     with cd('plpydbapi'):
         sudo('python setup.py install')
         sudo('pip install -e .')
