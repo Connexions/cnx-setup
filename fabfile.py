@@ -110,11 +110,10 @@ def archive_setup(https=''):
     plpydbapi_setup(https=https)
     cnxepub_setup(https=https)
     if not fabric.contrib.files.exists('cnx-archive'):
-        if not https:
-            run('git clone git@github.com:Connexions/cnx-archive.git')
         if https:
-            run('git clone https://github.com/Connexions/cnx-archive.git')
-
+            run('git clone https://github.com/Connexions/cnx-archive.git') 
+        else:
+            run('git clone git@github.com:Connexions/cnx-archive.git')           
     if not _postgres_user_exists('cnxarchive'):
         sudo('psql -d postgres -c "CREATE USER cnxarchive WITH SUPERUSER PASSWORD \'cnxarchive\'"', user='postgres')
 
