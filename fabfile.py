@@ -5,9 +5,10 @@ import time
 from fabric.api import *
 import fabric.contrib.files
 from ilogue import fexpect
-
 env.use_ssh_config = True
-
+env.hosts = 'default'
+env.ssh_config_path ='./.ssh_config'
+env.use_sudo=True
 def _setup():
     """Install packages necessary for the connexion projects
     """
