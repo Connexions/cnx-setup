@@ -11,6 +11,7 @@ env.use_ssh_config = True
 env.hosts = 'default'
 env.ssh_config_path ='../../.ssh_config'
 env.use_sudo=True
+env.cwd= DEPLOY_DIR
 def _setup():
     """Install packages necessary for the connexion projects
     """
@@ -106,28 +107,26 @@ def archive_setup(https=''):
     """
     _setup()
     _install_postgresql()
-    _install_plxslt()
-    with cd(DEPLOY_DIR):
-        query_setup(https=https)
-        upgrade_setup(https=https)
-        plpydbapi_setup(https=https)
-        cnxepub_setup(https=https)
-        if not fabric.contrib.files.exists('cnx-archive'):
-            if https:
-                sudo('git clone https://github.com/Connexions/cnx-archive.git') 
-            else:
-                sudo('git clone git@github.com:Connexions/cnx-archive.git')           
-        if not _postgres_user_exists('cnxarchive'):
-            sudo('psql -d postgres -c "CREATE USER cnxarchive WITH SUPERUSER PASSWORD \'cnxarchive\'"', user='postgres')
-
-        if _postgres_db_exists('cnxarchive'):
-            sudo('dropdb cnxarchive', user='postgres')
-        sudo('createdb -O cnxarchive cnxarchive', user='postgres')
-        sudo('createlang plpythonu cnxarchive', user='postgres')
-        with cd('cnx-archive'):
-            sudo('python setup.py install')
-            sudo('pip install -e .')
-            sudo('cnx-archive-initdb --with-example-data development.ini')
+    _install_plxslt() 
+    query_setup(https=https)
+    upgrade_setup(https=https)
+    plpydbapi_setup(https=https)
+    cnxepub_setup(https=https)
+    if not fabric.contrib.files.exists('cnx-archive'):
+        if https:
+            sudo('git clone https://github.com/Connexions/cnx-archive.git') 
+        else:
+            sudo('git clone git@github.com:Connexions/cnx-archive.git')           
+    if not _postgres_user_exists('cnxarchive'):
+        sudo('psql -d postgres -c "CREATE USER cnxarchive WITH SUPERUSER PASSWORD \'cnxarchive\'"', user='postgres')
+    if _postgres_db_exists('cnxarchive'):
+        sudo('dropdb cnxarchive', user='postgres')
+    sudo('createdb -O cnxarchive cnxarchive', user='postgres')
+    sudo('createlang plpythonu cnxarchive', user='postgres')
+    with cd('cnx-archive'):
+        sudo('python setup.py install')
+        sudo('pip install -e .')
+        sudo('cnx-archive-initdb --with-example-data development.ini')
 
 def archive_sudo(bg=''):
     """Run cnx-archive
